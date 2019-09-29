@@ -1,5 +1,4 @@
-﻿#pragma warning disable 1591
-#if DESKBAND_WINFORMS
+﻿
 namespace CSDeskBand
 {
     using System;
@@ -224,4 +223,3 @@ namespace CSDeskBand
         }
     }
 }
-#endif

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +16,8 @@ namespace DeskbandCallingApp
         // They both have the same signature and so only one
         // delegate is required.
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate UInt32 DllRegUnRegAPI();
+        public delegate void Register(Type t);
+         //public delegate UInt32 DllRegUnRegAPI();
 
         [DllImport("Kernel32.dll", CallingConvention = CallingConvention.StdCall)]
         static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string strLibraryName);
@@ -59,9 +62,10 @@ namespace DeskbandCallingApp
                 return false;
             }
         }
-
+     
         static void Main()
         {
+           
             // string[] args
             // Boolean to determine if registration or unregistration
             // is required.
@@ -115,9 +119,14 @@ namespace DeskbandCallingApp
 
             // Obtain the delegate from the exported function, whether it be
             // DllRegisterServer() or DllUnregisterServer().
-            DllRegUnRegAPI pDelegateRegUnReg =
-              (DllRegUnRegAPI)(Marshal.GetDelegateForFunctionPointer(pExportedFunction, typeof(DllRegUnRegAPI)))
-              as DllRegUnRegAPI;
+             Register pDelegateRegUnReg =
+              (Register)(Marshal.GetDelegateForFunctionPointer(pExportedFunction, typeof(Register)))
+              as Register;
+
+            //DllRegUnRegAPI pDelegateRegUnReg =
+            //  (DllRegUnRegAPI)(Marshal.GetDelegateForFunctionPointer(pExportedFunction, typeof(DllRegUnRegAPI)))
+            //  as DllRegUnRegAPI;
+            //ype t = new Type t;
 
             // Invoke the delegate.
             UInt32 hResult = pDelegateRegUnReg();
@@ -141,5 +150,6 @@ namespace DeskbandCallingApp
             FreeLibrary(hModuleDLL);
             hModuleDLL = IntPtr.Zero;
         }
+     
     }
 }
